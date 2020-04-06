@@ -173,7 +173,7 @@ class Login extends Component {
                       textShadow: "1px 1px 5px #000000"
                     }}
                   >
-                    <h4>CRM Casas Atlas</h4>
+                    <h4>Incidencias Asistencia</h4>
                   </div>
                 </Card>
               </CardGroup>
