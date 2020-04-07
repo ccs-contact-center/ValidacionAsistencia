@@ -13,12 +13,12 @@ export default {
 
     {
       name: "Ingreso Incidencias",
-      url: "/dashboard",
+      url: "/Incidencias",
       icon: "icon-people",
     },
     {
       name: "Validación Incidencias",
-      url: "/Nueva_Llamada",
+      url: "/Validacion",
       icon: "icon-rocket",
     },
 

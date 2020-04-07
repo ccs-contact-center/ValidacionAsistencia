@@ -14,8 +14,8 @@ const routes = [
   { path: "/", exact: true, name: "Home", component: DefaultLayout },
 
   { path: "/Inicio", name: "Inicio", component: Inicio },
-  { path: "/Llamada_General", name: "Llamada General", component: Incidencias },
-  { path: "/Buscador", name: "Consulta Leads", component: Validacion },
+  { path: "/Incidencias", name: "Ingreso Incidencias", component: Incidencias },
+  { path: "/Validacion", name: "Validación Incidencias", component: Validacion },
   { path: "/Reportes", name: "Reportes", component: Reportes },
 ];
 
