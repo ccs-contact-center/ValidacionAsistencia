@@ -21,6 +21,8 @@ import { getStyle } from "@coreui/coreui/dist/js/coreui-utilities";
 import { ReactTabulator } from "react-tabulator"; // for React 15.x, use import { React15Tabulator }
 import "react-tabulator/lib/styles.css";
 import "react-tabulator/lib/css/bootstrap/tabulator_bootstrap.min.css";
+import moment from "moment";
+import "moment/locale/es";
 
 const brandPrimary = getStyle("--primary");
 
@@ -117,7 +119,7 @@ const options = {
   paginationSize: 5,
 };
 
-class Llamada_General extends Component {
+class Incidencias extends Component {
   loading = () => (
     <div className="animated fadeIn pt-1 text-center">Cargando...</div>
   );
@@ -126,6 +128,7 @@ class Llamada_General extends Component {
     super(props);
     this.handleChange = this.handleChange.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleFormSave = this.handleFormSave.bind(this);
     this.API_CCS = new API_CCS();
     this.Auth = new AuthService();
     this.formRef = React.createRef();
@@ -137,26 +140,75 @@ class Llamada_General extends Component {
       id_user: this.Auth.getProfile().id_ccs,
       data: [],
       selectedAgent: "",
+      medio: "",
+      motivo: "",
+      asistencia: "",
+      desconexion: "",
     };
   }
 
   handleChange(e) {
-    this.setState({
-      [e.target.id]: e.target.value,
-    });
+    if (e.target.id === "desconexion") {
+      this.setState({
+        [e.target.id]: moment.duration(e.target.value).asSeconds(),
+      });
+    } else {
+      this.setState({
+        [e.target.id]: e.target.value,
+      });
+    }
   }
 
   rowClick = (e, row) => {
     this.setState({
       selectedAgent: `${row.getData().id}`,
+      id: `${row.getData().id}`,
     });
   };
 
   async handleFormSubmit(e) {
     e.preventDefault();
-    console.log(this.state);
+
     var datos = await this.API_CCS.getAgentes(this.state);
-    this.setState({ data: datos });
+    if (datos.length === 0) {
+      MySwal.fire({
+        title: "Sin Resultados",
+        text:
+          "Verifica que se haya ingresado la asistencia y que el nombre, id o fecha esten correctos",
+        type: "error",
+        confirmButtonColor: "#C00327",
+        allowOutsideClick: true,
+      });
+    } else {
+      this.setState({ data: datos });
+    }
+  }
+
+  handleFormSave(e) {
+    e.preventDefault();
+    this.API_CCS.sendValidacion(this.state)
+      .then((res) => {
+        MySwal.fire({
+          title: "Correcto",
+          text: "La incidencia se ha ingresado para validación",
+          type: "success",
+          confirmButtonColor: "#C00327",
+          allowOutsideClick: true,
+        });
+      })
+      .catch((err) => {
+        MySwal.fire({
+          title: "Error",
+          text:
+            "Se ha producido un error, por favor intenta de nuevo mas tarde",
+          type: "error",
+          confirmButtonColor: "#C00327",
+          allowOutsideClick: true,
+        });
+        console.log(err);
+      });
+
+    this.setState({ selectedAgent: "", id: "" });
   }
 
   render() {
@@ -201,6 +253,7 @@ class Llamada_General extends Component {
                             placeholder="Nombre"
                             onChange={this.handleChange}
                             id="nombre"
+                            value={this.state.nombre}
                           />
                         </FormGroup>
                       </Col>
@@ -211,6 +264,7 @@ class Llamada_General extends Component {
                             type="text"
                             placeholder="ID"
                             onChange={this.handleChange}
+                            value={this.state.id}
                             id="id"
                           />
                         </FormGroup>
@@ -220,12 +274,13 @@ class Llamada_General extends Component {
                           <Label htmlFor="prospecto">Fecha</Label>
                           <Input
                             type="date"
-                            date-format="dd/mm/yyyy"
+                            date-format="mm/dd/yyyy"
                             placeholder="Fecha"
                             onChange={this.handleChange}
+                            onBlur={this.handleChange}
                             id="fecha"
                             value={this.state.fecha}
-                            lang="es"
+                            lang="es-MX"
                             required
                           />
                         </FormGroup>
@@ -267,7 +322,9 @@ class Llamada_General extends Component {
                     <Button
                       color="link"
                       className="card-header-action btn-close"
-                      onClick={() => this.setState({ selectedAgent: "" })}
+                      onClick={() =>
+                        this.setState({ selectedAgent: "", id: "" })
+                      }
                     >
                       <i className="icon-close" />
                     </Button>
@@ -279,6 +336,7 @@ class Llamada_General extends Component {
                     className="form-horizontal"
                     innerRef={this.formRef}
                     autoComplete="off"
+                    onSubmit={this.handleFormSave}
                   >
                     <Row>
                       <Col className="col-sm-4">
@@ -337,6 +395,8 @@ class Llamada_General extends Component {
                             placeholder="00:00:00"
                             onChange={this.handleChange}
                             id="desconexion"
+                            required
+                            pattern="^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$"
                           />
                         </FormGroup>
                       </Col>
@@ -360,4 +420,4 @@ class Llamada_General extends Component {
   }
 }
 
-export default withAuth(Llamada_General);
+export default withAuth(Incidencias);

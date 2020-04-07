@@ -1,4 +1,6 @@
 import AuthService from "./AuthService";
+import moment from "moment";
+import "moment/locale/es";
 
 class API_CCS {
   constructor() {
@@ -53,11 +55,45 @@ class API_CCS {
       "https://api.ccscontactcenter.com/v1/personal/Asistencia?id=" +
         data.id +
         "&fecha=" +
-        this.convertDate(data.fecha) +
+        moment(data.fecha).format("DD/MM/YYYY") +
         "&nombres=" +
         data.nombre,
       {
         method: "GET",
+      }
+    ).then((res) => {
+      return Promise.resolve(res);
+    });
+  }
+
+  sendValidacion(data) {
+    return this.fetch(
+      "https://api.ccscontactcenter.com/v1/personal/Asistencia",
+      {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      }
+    ).then((res) => {
+      return Promise.resolve(res);
+    });
+  }
+  getAgentesValidacion(data) {
+    return this.fetch(
+      "https://api.ccscontactcenter.com/v1/personal/AsistenciaValidacion",
+      {
+        method: "GET",
+      }
+    ).then((res) => {
+      return Promise.resolve(res);
+    });
+  }
+
+  patchAgentesValidacion(data) {
+    return this.fetch(
+      "https://api.ccscontactcenter.com/v1/personal/AsistenciaValidacion",
+      {
+        method: "PATCH",
+        body: JSON.stringify(data),
       }
     ).then((res) => {
       return Promise.resolve(res);

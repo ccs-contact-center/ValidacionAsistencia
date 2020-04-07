@@ -8,7 +8,7 @@ import {
   FormGroup,
   Label,
   Input,
-  Form
+  Form,
 } from "reactstrap";
 import Iframe from "react-iframe";
 import withAuth from "../components/withAuth";
@@ -23,18 +23,18 @@ class Reportes extends Component {
     fecha_ini: "",
     fecha_fin: "",
     url: "",
-    reportID: 0
+    reportID: 0,
   };
 
   handleChange(e) {
     this.setState({
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     });
   }
 
   handleChangeInput(e) {
     this.setState({
-      reportID: e.target.value
+      reportID: e.target.value,
     });
   }
 
@@ -46,7 +46,7 @@ class Reportes extends Component {
       timeZone: "UTC",
       day: "2-digit",
       month: "2-digit",
-      year: "numeric"
+      year: "numeric",
     };
 
     var fecha_ini = new Intl.DateTimeFormat("es-MX", options).format(
@@ -55,25 +55,22 @@ class Reportes extends Component {
     var fecha_fin = new Intl.DateTimeFormat("es-MX", options).format(
       new Date(Date.parse(this.state.fecha_fin))
     );
- 
 
     var composeURL = "";
 
-
-      if (this.state.reportID === "1") {
-        composeURL =
-          "https://reportes.ccscontactcenter.com/reports/Pages/ReportViewer.aspx?/Atlas/Llamadas%20Generales&rs:Embed=true&rc:Toolbar=true&rc:Parameters=false&rc:Section=' + 1 + '&FECHA_INI=" +
-          fecha_ini +
-          "&FECHA_FIN=" +
-          fecha_fin;
-      }  else if(this.state.reportID === "2") {
-        composeURL =
+    if (this.state.reportID === "1") {
+      composeURL =
+        "https://reportes.ccscontactcenter.com/reports/Pages/ReportViewer.aspx?/CCS/Asistencia%20Validacion&rs:Embed=true&rc:Toolbar=true&rc:Parameters=false&rc:Section=' + 1 + '&FECHA_INI=" +
+        fecha_ini +
+        "&FECHA_FIN=" +
+        fecha_fin;
+    } else if (this.state.reportID === "2") {
+      composeURL =
         "https://reportes.ccscontactcenter.com/reports/Pages/ReportViewer.aspx?/Atlas/RACS&rs:Embed=true&rc:Toolbar=true&rc:Parameters=false&rc:Section=' + 1 + '&FECHA_INI=" +
         fecha_ini +
         "&FECHA_FIN=" +
         fecha_fin;
-      }
-  
+    }
 
     this.setState({ url: composeURL });
   }
@@ -99,19 +96,16 @@ class Reportes extends Component {
                       <FormGroup>
                         <Label htmlFor="ccmonth">Reporte</Label>
 
-           
-                          <Input
-                            type="select"
-                            name="ccmonth"
-                            id="ccmonth"
-                            required
-                            onChange={this.handleChangeInput}
-                          >
-                            <option value="">-Selecciona-</option>
-                            <option value="1">Llamadas Generales</option>
-                            <option value="2">RACS</option>
-                          </Input>
-                      
+                        <Input
+                          type="select"
+                          name="ccmonth"
+                          id="ccmonth"
+                          required
+                          onChange={this.handleChangeInput}
+                        >
+                          <option value="">-Selecciona-</option>
+                          <option value="1">Layout</option>
+                        </Input>
                       </FormGroup>
                     </Col>
                   </Row>
